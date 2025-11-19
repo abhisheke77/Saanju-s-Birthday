@@ -4,18 +4,29 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>Birthday Surprise — Mobile Friendly</title>
+
+<!-- Optional: load Great Vibes font -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
 <style>
   :root{--bg1:#3b0f63;--bg2:#6b2fa6;--accent:#ffd6f0}
   html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;
     background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#fff;overflow:hidden;}
   .wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;
     padding:18px 16px 92px;box-sizing:border-box}
-  .title{font-family:"Great Vibes",serif;font-size:36px;margin-top:8vh;text-align:center;
+  .title{font-family:"Great Vibes", serif, system-ui; font-size:36px;margin-top:8vh;text-align:center;
     color:var(--accent);text-shadow:0 6px 18px rgba(0,0,0,.4)}
   .subtitle{font-size:14px;opacity:.95;margin-top:6px;text-align:center}
-  .hero{width:86vw;max-width:420px;height:86vw;max-height:420px;border-radius:14px;
-    background:url("./WhatsApp Image 2025-11-18 at 9.43.16 PM.jpeg") center/cover no-repeat;
-    margin:18px 0;box-shadow:0 18px 40px rgba(0,0,0,.45);border:4px solid rgba(255,255,255,.06);}
+
+  /* Center photo (use img for reliability) */
+  .hero-img{
+    width:86vw; max-width:420px; height:auto; max-height:68vh;
+    border-radius:14px; object-fit:cover; display:block; margin:18px 0;
+    box-shadow:0 18px 40px rgba(0,0,0,.45); border:4px solid rgba(255,255,255,.06);
+    background-color:rgba(255,255,255,0.02);
+    cursor:pointer;
+  }
+
   .card{width:92%;max-width:520px;padding:14px;border-radius:12px;background:rgba(255,255,255,0.06);
     backdrop-filter:blur(6px);text-align:center;margin-bottom:6px}
   .name{font-family:"Great Vibes",serif;font-size:28px;color:var(--accent)}
@@ -24,11 +35,7 @@
   /* tiny unicorns */
   .tiny-unicorn{position:absolute;width:60px;opacity:0.45;
     animation:floatUnicorn 8s ease-in-out infinite;pointer-events:none;}
-  @keyframes floatUnicorn{
-    0%{transform:translateY(0)}
-    50%{transform:translateY(-12px)}
-    100%{transform:translateY(0)}
-  }
+  @keyframes floatUnicorn{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
 
   /* left button */
   .surprise-btn{
@@ -38,27 +45,15 @@
   }
 
   /* overlay */
-  .overlay{
-    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-    pointer-events:none;opacity:0;transition:opacity .28s;z-index:120;
-  }
+  .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .28s;z-index:120}
   .overlay.show{pointer-events:auto;opacity:1;background:rgba(0,0,0,.45)}
-  .surprise-card{
-    width:86%;max-width:360px;background:rgba(255,255,255,0.06);
-    padding:16px;border-radius:12px;text-align:center;backdrop-filter:blur(6px);
-    position:relative;
-  }
+  .surprise-card{width:86%;max-width:360px;background:rgba(255,255,255,0.06);padding:16px;border-radius:12px;text-align:center;backdrop-filter:blur(6px);position:relative;}
   .cake{font-size:64px;}
   .knife{position:absolute;font-size:34px;opacity:0;pointer-events:none;z-index:130}
-  .close-small{margin-top:12px;padding:8px 12px;border-radius:10px;border:0;
-    background:rgba(255,255,255,0.08);color:#fff;}
-
+  .close-small{margin-top:12px;padding:8px 12px;border-radius:10px;border:0;background:rgba(255,255,255,0.08);color:#fff;}
   canvas{position:fixed;inset:0;pointer-events:none;width:100%;height:100%;z-index:100}
 
-  @media(max-width:420px){
-    .title{font-size:30px}
-    .cake{font-size:56px}
-  }
+  @media(max-width:420px){ .title{font-size:30px} .cake{font-size:56px} }
 </style>
 </head>
 <body>
@@ -67,16 +62,17 @@
 <canvas id="spark"></canvas>
 <canvas id="confetti"></canvas>
 
-<!-- 3 unicorns -->
-<img class="tiny-unicorn" src="./download.jpg" style="left:8%; top:18%;">
-<img class="tiny-unicorn" src="./download (1).jpg" style="right:10%; top:42%; animation-delay:1s;">
-<img class="tiny-unicorn" src="./download (2).jpg" style="left:32%; bottom:12%; animation-delay:2s;">
+<!-- 3 tiny unicorns (simple filenames, put these in repo) -->
+<img class="tiny-unicorn" src="./uni1.png" style="left:8%; top:18%;" alt="uni1">
+<img class="tiny-unicorn" src="./uni2.png" style="right:10%; top:42%; animation-delay:1s;" alt="uni2">
+<img class="tiny-unicorn" src="./uni3.png" style="left:32%; bottom:12%; animation-delay:2s;" alt="uni3">
 
 <div class="wrap">
   <div class="title">Happy Birthday, <span id="friend">Sanjuuu❤️</span> 🎉</div>
   <div class="subtitle">Wishing you Happiness & success✨</div>
 
-  <div id="hero" class="hero"></div>
+  <!-- Use an <img> for the center photo. Place hero.jpg in same folder as index.html -->
+  <img id="heroImg" class="hero-img" src="./hero.jpg" alt="Friend photo — click to change">
 
   <div class="card" id="card">
     <div class="name" id="displayName">Happiest birthday sanjanaa!!</div>
@@ -88,112 +84,68 @@
 <button id="surpriseBtn" class="surprise-btn">Surprise 🎉</button>
 
 <!-- Surprise -->
-<div id="overlay" class="overlay">
+<div id="overlay" class="overlay" aria-hidden="true">
   <div class="surprise-card">
     <div style="position:relative">
       <div class="knife" id="knife">🔪</div>
       <div class="cake" id="cakeEmoji">🎂</div>
     </div>
-
-    <!-- YOU ASKED TO REMOVE “MAKE A WISH” → REMOVED HERE -->
     <p style="margin-top:12px">Loaddzzzz of loveeee to uu sanjanaaa ❤️</p>
-
     <button id="closeBtn" class="close-small">Close</button>
   </div>
 </div>
 
 <script>
-/* particles */
+/* particles (kept same) */
 const spark=document.getElementById('spark'),sCtx=spark.getContext('2d');
 const conf=document.getElementById('confetti'),cCtx=conf.getContext('2d');
 let W=innerWidth,H=innerHeight;
-addEventListener('resize',()=>{W=innerWidth;H=innerHeight;spark.width=conf.width=W;spark.height=conf.height=H;});
-spark.width=conf.width=W; spark.height=conf.height=H;
+function onResize(){ W=innerWidth; H=innerHeight; spark.width=conf.width=W; spark.height=conf.height=H; }
+addEventListener('resize', onResize); onResize();
 
 const sparks=Array.from({length:60},()=>({
   x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+.6,
   vx:(Math.random()-.5)*.3,vy:(Math.random()-.7)*.2,a:Math.random()*.9+.1,h:Math.random()*360
 }));
 function drawS(){
-  sCtx.clearRect(0,0,W,H);
-  sCtx.globalCompositeOperation='lighter';
+  sCtx.clearRect(0,0,W,H); sCtx.globalCompositeOperation='lighter';
   for(const p of sparks){
     p.x+=p.vx;p.y+=p.vy;p.a-=.0005;
-    if(p.a<=0||p.x<-20||p.x>W+20||p.y<-20||p.y>H+20)
-      Object.assign(p,{x:Math.random()*W,y:H+10,a:Math.random()*.9+.1});
-    sCtx.beginPath();
-    sCtx.fillStyle=`hsla(${p.h},80%,70%,${p.a})`;
-    sCtx.arc(p.x,p.y,p.r,0,6.28);sCtx.fill();
+    if(p.a<=0||p.x<-20||p.x>W+20||p.y<-20||p.y>H+20) Object.assign(p,{x:Math.random()*W,y:H+10,a:Math.random()*.9+.1});
+    sCtx.beginPath(); sCtx.fillStyle=`hsla(${p.h},80%,70%,${p.a})`; sCtx.arc(p.x,p.y,p.r,0,6.28); sCtx.fill();
   }
   requestAnimationFrame(drawS);
 }
 drawS();
 
-/* confetti after cut */
 const particles=[];
-function spawn(x,y,n){
-  for(let i=0;i<n;i++){
-    particles.push({
-      x,y,vx:(Math.random()-.5)*7,vy:(Math.random()-.9)*7,
-      size:Math.random()*5+2,life:40+Math.random()*40,
-      col:`hsl(${Math.random()*360} 90% 60%)`
-    });
-  }
-}
-function drawParticles(){
-  cCtx.clearRect(0,0,W,H);
-  for(let i=particles.length-1;i>=0;i--){
-    const p=particles[i];
-    p.x+=p.vx;p.y+=p.vy;p.vy+=.18;p.life--;
-    cCtx.fillStyle=p.col;cCtx.fillRect(p.x,p.y,p.size,p.size);
-    if(p.life<=0||p.y>H+80)particles.splice(i,1);
-  }
-  requestAnimationFrame(drawParticles);
-}
-drawParticles();
+function spawn(x,y,n){ for(let i=0;i<n;i++){ particles.push({ x,y,vx:(Math.random()-.5)*7,vy:(Math.random()-.9)*7, size:Math.random()*5+2, life:40+Math.random()*40, col:`hsl(${Math.random()*360} 90% 60%)` }); } }
+function drawConf(){ cCtx.clearRect(0,0,W,H); for(let i=particles.length-1;i>=0;i--){ const p=particles[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=.18; p.life--; cCtx.fillStyle=p.col; cCtx.fillRect(p.x,p.y,p.size,p.size); if(p.life<=0||p.y>H+80) particles.splice(i,1); } requestAnimationFrame(drawConf); }
+drawConf();
 
-/* overlay logic */
+/* overlay logic (same) */
 const overlay=document.getElementById('overlay');
 const knife=document.getElementById('knife');
 const cakeEmoji=document.getElementById('cakeEmoji');
 
 document.getElementById('surpriseBtn').onclick=()=>{
-  overlay.classList.add('show');
-
+  overlay.classList.add('show'); overlay.setAttribute('aria-hidden','false');
   const rect=cakeEmoji.getBoundingClientRect();
-  knife.style.opacity=1;
-  knife.style.top=(rect.top-6)+"px";
-  knife.style.left="-80px";
-
-  knife.animate([
-    {left:'-80px',transform:'rotate(-20deg)'},
-    {left:(rect.left+rect.width*.4)+'px',transform:'rotate(-10deg)'},
-    {left:(rect.left+rect.width)+'px',transform:'rotate(8deg)'},
-  ],{duration:650,easing:'ease-out'}).onfinish=()=>{
-    cakeEmoji.textContent='🍰';
-    spawn(rect.left+rect.width/2,rect.top+rect.height/2,120);
-    spawn(W*.3,H*.25,60);spawn(W*.7,H*.35,60);
-    setTimeout(()=>knife.style.opacity=0,500);
+  knife.style.opacity=1; knife.style.top=(rect.top-6)+"px"; knife.style.left="-80px";
+  knife.animate([{left:'-80px',transform:'rotate(-20deg)'},{left:(rect.left+rect.width*.4)+'px',transform:'rotate(-10deg)'},{left:(rect.left+rect.width)+'px',transform:'rotate(8deg)'}],{duration:650,easing:'ease-out'}).onfinish=()=>{
+    cakeEmoji.textContent='🍰'; spawn(rect.left+rect.width/2,rect.top+rect.height/2,120); spawn(W*.3,H*.25,60); spawn(W*.7,H*.35,60); setTimeout(()=>knife.style.opacity=0,500);
   };
 };
+document.getElementById('closeBtn').onclick=()=>{ overlay.classList.remove('show'); cakeEmoji.textContent='🎂'; };
+overlay.onclick=e=>{ if(e.target===overlay){ overlay.classList.remove('show'); cakeEmoji.textContent='🎂'; } };
 
-document.getElementById('closeBtn').onclick=()=>{
-  overlay.classList.remove('show');
-  cakeEmoji.textContent='🎂';
-};
-
-overlay.onclick=e=>{if(e.target===overlay){overlay.classList.remove('show');cakeEmoji.textContent='🎂';}};
+/* allow clicking hero image to replace locally (optional) */
+document.getElementById('heroImg').addEventListener('click', ()=>{
+  const i=document.createElement('input'); i.type='file'; i.accept='image/*';
+  i.onchange=e=>{ const f=e.target.files[0]; if(!f) return; document.getElementById('heroImg').src = URL.createObjectURL(f); };
+  i.click();
+});
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
